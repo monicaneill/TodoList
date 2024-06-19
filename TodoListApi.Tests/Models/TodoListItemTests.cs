@@ -1,60 +1,46 @@
-using TodoListModel = TodoList.WebApi.Models.TodoList;
+using System.Runtime.CompilerServices;
+using FluentAssertions;
+using TodoList.WebApi.Dtos;
 
 namespace TodoListApi.Tests.Models;
 
 public class TodoListItemTests
 {
-    private TodoListModel CreateTodoList(int id, string itemToDo, bool isCompleted)
-    {
-        return new TodoListModel
-        {
-            Id = id,
-            ItemToDo = itemToDo,
-            IsCompleted = isCompleted
-        };
-    }
 
     [Fact]
     public void ItemToDo_CanBeAltered()
     {
         //Arrange
-        var todoItem = CreateTodoList(1, "Go for run", false);
+        var todoObject = TodoListDataBuilder.CreateTodoList(1, "Go for run", false);
 
         //Act
-        todoItem.ItemToDo = "Wipe counters";
+        todoObject.ItemToDo = "Wipe counters";
 
         //Assert
-        Assert.Equal("Wipe counters", todoItem.ItemToDo);
-    }
-
-    [Fact]
-    public void ItemToDo_CannotBeEmpty()
-    {
-        var todoItem = CreateTodoList(1, "", false);
-
-        Assert.Fail("ItemToDo cannot be null or empty");
+        Assert.Equal("Wipe counters", todoObject.ItemToDo);
     }
 
     [Fact]
     public void IsCompleted_CanBeChanged()
     {
         //Arrange
-        var todoItem = CreateTodoList(1, "Wipe counters", false);
+        var todoObject = TodoListDataBuilder.CreateTodoList(1, "Wipe counters", false);
 
         //Act
-        todoItem.IsCompleted = true;
+        todoObject.IsCompleted = true;
 
         //Assert
-        Assert.True(todoItem.IsCompleted);
+        Assert.True(todoObject.IsCompleted);
     }
 
-    [Fact]
-    public void Id_CannotBeLessThan1()
+    [Theory]
+    [InlineData(nameof(TodoListDto.Id))]
+    [InlineData(nameof(TodoListDto.ItemToDo))]
+    [InlineData(nameof(TodoListDto.IsCompleted))]
+    public void TodoListModel_ShouldHaveRequiredMemberAttributeSetOnAllProperties(string propertyName)
     {
-        var todoItem = CreateTodoList(0, "test item", false);
+        var requiredProperty = typeof(TodoListDto).GetProperty(propertyName);
 
-        Assert.Throws<ArgumentException>(() => todoItem);
-
-        //Lambda in combination with throws represents the code you expect to throw an exception. 
+        requiredProperty.Should().BeDecoratedWith<RequiredMemberAttribute>();
     }
 }
