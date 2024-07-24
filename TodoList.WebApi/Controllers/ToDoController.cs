@@ -13,17 +13,16 @@ public class ToDoController : ControllerBase
     }
 
     // GET api/ToDoController>/5
-    [HttpGet("{id}")]
-    public string Get(int id)
+    [HttpGet("id/{id}")]
+    public string GetById(int id)
     {
         return $"value {id}";
     }
 
-    //make make separate one for fetching Completed
-    [HttpGet("{Completed}")]
-    public string Get(int id)
+    [HttpGet("completed/{completed}")]
+    public string GetByCompletionStatus(bool completed)
     {
-        return $"value {id}";
+        return completed ? "completed task" : "not completed task";
     }
 
     // POST api/<ToDoController>
