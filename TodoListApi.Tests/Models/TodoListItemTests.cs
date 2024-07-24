@@ -21,22 +21,22 @@ public class TodoListItemTests
     }
 
     [Fact]
-    public void IsCompleted_CanBeChanged()
+    public void Completed_CanBeChanged()
     {
         //Arrange
         var todoObject = TodoListDataBuilder.CreateTodoList(1, "Wipe counters", false);
 
         //Act
-        todoObject.IsCompleted = true;
+        todoObject.Completed = true;
 
         //Assert
-        Assert.True(todoObject.IsCompleted);
+        Assert.True(todoObject.Completed);
     }
 
     [Theory]
     [InlineData(nameof(TodoListDto.Id))]
     [InlineData(nameof(TodoListDto.ItemToDo))]
-    [InlineData(nameof(TodoListDto.IsCompleted))]
+    [InlineData(nameof(TodoListDto.Completed))]
     public void TodoListModel_ShouldHaveRequiredMemberAttributeSetOnAllProperties(string propertyName)
     {
         var requiredProperty = typeof(TodoListDto).GetProperty(propertyName);

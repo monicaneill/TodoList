@@ -4,13 +4,13 @@ namespace TodoListApi.Tests;
 
 public class TodoListDataBuilder
 {
-    public static TodoListDto CreateTodoList(int id, string itemToDo, bool isCompleted)
+    public static TodoListDto CreateTodoList(int id, string itemToDo, bool Completed)
     {
         return new TodoListDto
         {
             Id = id,
             ItemToDo = itemToDo,
-            IsCompleted = isCompleted
+            Completed = Completed
         };
     }
 }
