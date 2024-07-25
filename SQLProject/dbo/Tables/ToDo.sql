@@ -1,0 +1,6 @@
+﻿CREATE TABLE [dbo].[ToDo]
+(
+	[Id] INT NOT NULL PRIMARY KEY IDENTITY, 
+    [ItemToDo] NVARCHAR(50) NOT NULL, 
+    [Completed] BIT NOT NULL
+)
