@@ -18,7 +18,11 @@ public class ToDoController : ControllerBase
     {
         return $"value {id}";
     }
-
+    /// <summary>
+    /// Returns list of items based on their completion status
+    /// </summary>
+    /// <param name="completed">The completion status(true/false)</param>
+    /// <returns>The item that was either completed or not completed</returns>
     [HttpGet("completed/{completed}")]
     public string GetByCompletionStatus(bool completed)
     {
