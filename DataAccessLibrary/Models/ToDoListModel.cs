@@ -1,6 +1,6 @@
 ﻿namespace DataAccessLibrary.Models;
 
-public class ToDoListData
+public class ToDoListModel
 {
     public required int Id { get; set; }
     public required string ItemToDo { get; set; }
