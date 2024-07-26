@@ -1,12 +1,12 @@
-﻿using TodoList.WebApi.Dtos;
+﻿using DataAccessLibrary.Models;
 
 namespace TodoListApi.Tests;
 
 public class TodoListDataBuilder
 {
-    public static TodoListDto CreateTodoList(int id, string itemToDo, bool Completed)
+    public static ToDoListData CreateTodoList(int id, string itemToDo, bool Completed)
     {
-        return new TodoListDto
+        return new ToDoListData
         {
             Id = id,
             ItemToDo = itemToDo,
