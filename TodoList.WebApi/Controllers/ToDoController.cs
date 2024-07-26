@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using DataAccessLibrary.Data;
 
 namespace TodoList.WebApi.Controllers;
 
@@ -7,9 +8,10 @@ namespace TodoList.WebApi.Controllers;
 public class ToDoController : ControllerBase
 {
     [HttpGet]
-    public IEnumerable<string> Get()
+    public List<ToDoListData> Get()
     {
-        return new string[] { "value1", "value2" };
+        var blah = new List<ToDoListData>();
+       return blah;
     }
 
     // GET api/ToDoController>/5

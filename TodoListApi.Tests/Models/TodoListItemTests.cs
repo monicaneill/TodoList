@@ -34,12 +34,12 @@ public class TodoListItemTests
     }
 
     [Theory]
-    [InlineData(nameof(ToDoListData.Id))]
-    [InlineData(nameof(ToDoListData.ItemToDo))]
-    [InlineData(nameof(ToDoListData.Completed))]
+    [InlineData(nameof(ToDoListModel.Id))]
+    [InlineData(nameof(ToDoListModel.ItemToDo))]
+    [InlineData(nameof(ToDoListModel.Completed))]
     public void TodoListModel_ShouldHaveRequiredMemberAttributeSetOnAllProperties(string propertyName)
     {
-        var requiredProperty = typeof(ToDoListData).GetProperty(propertyName);
+        var requiredProperty = typeof(ToDoListModel).GetProperty(propertyName);
 
         requiredProperty.Should().BeDecoratedWith<RequiredMemberAttribute>();
     }

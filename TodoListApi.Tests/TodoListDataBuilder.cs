@@ -4,9 +4,9 @@ namespace TodoListApi.Tests;
 
 public class TodoListDataBuilder
 {
-    public static ToDoListData CreateTodoList(int id, string itemToDo, bool Completed)
+    public static ToDoListModel CreateTodoList(int id, string itemToDo, bool Completed)
     {
-        return new ToDoListData
+        return new ToDoListModel
         {
             Id = id,
             ItemToDo = itemToDo,
