@@ -6,14 +6,14 @@ namespace DataAccessLibrary.Data;
 public class ToDoListData(ISqlDataAccess db) : IToDoListData
 {
     public Task<IEnumerable<ToDoListModel>> GetToDoListItems() =>
-        db.LoadData<ToDoListModel, dynamic>("dbo.spToDo_GetAll", new { });
+        db.LoadData<ToDoListModel, dynamic>("dbo.spToDoList_GetAll", new { });
 
-    public async Task<ToDoListModel?> GetToDoListItem(int id)
+    public async Task<ToDoListModel> GetToDoListItem(int id)
     {
         var results = await db.LoadData<ToDoListModel, dynamic>(
-            "dbo.spToDo_Get",
+            "dbo.spToDoList_Get",
             new { Id = id });
-        return results.FirstOrDefault();
+        return results.First();
     }
 
     public Task InsertToDoItem(ToDoListModel item) =>
@@ -23,5 +23,5 @@ public class ToDoListData(ISqlDataAccess db) : IToDoListData
         db.SaveData("dbo.spToDo_Update", item);
 
     public Task DeleteToDoItem(int id) =>
-        db.SaveData("dbo.spToDo_Delete", new { Id = id });
+        db.SaveData("dbo.spToDoList_Delete", new { Id = id });
 }
