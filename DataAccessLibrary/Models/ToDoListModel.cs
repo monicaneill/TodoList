@@ -1,6 +1,6 @@
-﻿namespace TodoList.WebApi.Dtos;
+﻿namespace DataAccessLibrary.Models;
 
-public class TodoListDto
+public class ToDoListModel
 {
     public required int Id { get; set; }
     public required string ItemToDo { get; set; }

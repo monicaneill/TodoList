@@ -1,6 +1,6 @@
 using System.Runtime.CompilerServices;
 using FluentAssertions;
-using TodoList.WebApi.Dtos;
+using DataAccessLibrary.Models;
 
 namespace TodoListApi.Tests.Models;
 
@@ -34,12 +34,12 @@ public class TodoListItemTests
     }
 
     [Theory]
-    [InlineData(nameof(TodoListDto.Id))]
-    [InlineData(nameof(TodoListDto.ItemToDo))]
-    [InlineData(nameof(TodoListDto.Completed))]
+    [InlineData(nameof(ToDoListModel.Id))]
+    [InlineData(nameof(ToDoListModel.ItemToDo))]
+    [InlineData(nameof(ToDoListModel.Completed))]
     public void TodoListModel_ShouldHaveRequiredMemberAttributeSetOnAllProperties(string propertyName)
     {
-        var requiredProperty = typeof(TodoListDto).GetProperty(propertyName);
+        var requiredProperty = typeof(ToDoListModel).GetProperty(propertyName);
 
         requiredProperty.Should().BeDecoratedWith<RequiredMemberAttribute>();
     }

@@ -1,9 +1,9 @@
-﻿using FluentValidation;
-using TodoList.WebApi.Dtos;
+﻿using DataAccessLibrary.Models;
+using FluentValidation;
 
 namespace TodoList.WebApi.Validation;
 
-public class TodoListDtoValidator : AbstractValidator<TodoListDto>
+public class TodoListDtoValidator : AbstractValidator<ToDoListModel>
 {
     public TodoListDtoValidator()
     {

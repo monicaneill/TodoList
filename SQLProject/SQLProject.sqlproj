@@ -59,15 +59,21 @@
     <Folder Include="dbo" />
     <Folder Include="dbo\Tables" />
     <Folder Include="PublishLocations" />
-    <Folder Include="dbo\Views" />
     <Folder Include="dbo\StoredProcs" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="dbo\Tables\ToDo.sql" />
-    <Build Include="dbo\Views\ToDoListView.sql" />
     <Build Include="dbo\StoredProcs\spToDoList_FilterByCompleted.sql" />
+    <Build Include="dbo\StoredProcs\spToDoList_GetAll.sql" />
+    <Build Include="dbo\StoredProcs\spToDo_Get.sql" />
+    <Build Include="dbo\StoredProcs\spToDo_Delete.sql" />
+    <Build Include="dbo\StoredProcs\spToDo_Insert.sql" />
+    <Build Include="dbo\StoredProcs\spToDo_Update.sql" />
   </ItemGroup>
   <ItemGroup>
     <None Include="PublishLocations\LocalToDoListDB.publish.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <PostDeploy Include="Script.PostDeployment.sql" />
   </ItemGroup>
 </Project>
