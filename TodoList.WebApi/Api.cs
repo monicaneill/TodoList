@@ -57,6 +57,12 @@ public static class Api
         }
     }
 
+    /// <summary>
+    /// Inserts a new to do list item
+    /// </summary>
+    /// <param name="toDoList">When inserting a new item, don't alter the id field (leave as 0). This will automatically insert as the next auto-increment id</param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     private static async Task<IResult> InsertToDoItem(ToDoListModel toDoList, IToDoListData data)
     {
         try

@@ -16,12 +16,12 @@ public class ToDoListData(ISqlDataAccess db) : IToDoListData
         return results.First();
     }
 
-    public async Task<ToDoListModel> FilterToDoListItem(bool completed)
+    public async Task<IEnumerable<ToDoListModel>> FilterToDoListItem(bool completed)
     {
         var results = await db.LoadData<ToDoListModel, dynamic>(
             "dbo.spToDoList_FilterByCompleted",
             new { Completed = completed });
-        return results.First();
+        return results;
     }
 
     public Task InsertToDoItem(ToDoListModel item) =>
