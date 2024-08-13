@@ -10,7 +10,7 @@ public static class Api
         app.MapGet("/ToDo/completed/{completed}", FilterToDoListItem);
         app.MapPost("/ToDo", InsertToDoItem);
         app.MapPut("/ToDo", UpdateToDoItem);
-        app.MapDelete("/ToDo", DeleteToDoItem);
+        app.MapDelete("/ToDo/id/{id}", DeleteToDoItem);
     }
 
     private static async Task<IResult> GetToDoListItems(IToDoListData data)
@@ -38,6 +38,12 @@ public static class Api
         }
     }
 
+    /// <summary>
+    /// Gets the to do list item based on completion status true/false
+    /// </summary>
+    /// <param name="completed"></param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     private static async Task<IResult> FilterToDoListItem(bool completed, IToDoListData data)
     {
         try
@@ -51,6 +57,12 @@ public static class Api
         }
     }
 
+    /// <summary>
+    /// Inserts a new to do list item
+    /// </summary>
+    /// <param name="toDoList">When inserting a new item, don't alter the id field (leave as 0). This will automatically insert as the next auto-increment id</param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     private static async Task<IResult> InsertToDoItem(ToDoListModel toDoList, IToDoListData data)
     {
         try
@@ -63,6 +75,13 @@ public static class Api
             return Results.Problem(e.Message);
         }
     }
+
+    /// <summary>
+    /// Updates an item by overwriting the id with the data changes desired
+    /// </summary>
+    /// <param name="toDoList">Update the model below with the data desired</param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     private static async Task<IResult> UpdateToDoItem(ToDoListModel toDoList, IToDoListData data)
     {
         try
@@ -76,6 +95,12 @@ public static class Api
         }
     }
 
+    /// <summary>
+    /// Deletes individual to do list items by id
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="data"></param>
+    /// <returns></returns>
     private static async Task<IResult> DeleteToDoItem(int id, IToDoListData data)
     {
         try
