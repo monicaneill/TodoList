@@ -13,11 +13,16 @@ public static class Api
         app.MapDelete("/ToDo/id/{id}", DeleteToDoItem);
     }
 
-    private static async Task<IResult> GetToDoListItems(IToDoListData data)
+    public static async Task<IResult> GetToDoListItems(IToDoListData data)
     {
         try
         {
-            return Results.Ok(await data.GetToDoListItems());
+            var items = await data.GetToDoListItems();
+            if (items == null || !items.Any())
+            {
+                return Results.NotFound("No to-do list items are present, try adding some!");
+            }
+            return Results.Ok(items);
         }
         catch (Exception e)
         {
@@ -25,7 +30,7 @@ public static class Api
         }
     }
 
-    private static async Task<IResult> GetToDoListItem(int id, IToDoListData data)
+    public static async Task<IResult> GetToDoListItem(int id, IToDoListData data)
     {
         try
         {
@@ -44,7 +49,7 @@ public static class Api
     /// <param name="completed"></param>
     /// <param name="data"></param>
     /// <returns></returns>
-    private static async Task<IResult> FilterToDoListItem(bool completed, IToDoListData data)
+    public static async Task<IResult> FilterToDoListItem(bool completed, IToDoListData data)
     {
         try
         {
@@ -63,7 +68,7 @@ public static class Api
     /// <param name="toDoList">When inserting a new item, don't alter the id field (leave as 0). This will automatically insert as the next auto-increment id</param>
     /// <param name="data"></param>
     /// <returns></returns>
-    private static async Task<IResult> InsertToDoItem(ToDoListModel toDoList, IToDoListData data)
+    public static async Task<IResult> InsertToDoItem(ToDoListModel toDoList, IToDoListData data)
     {
         try
         {
@@ -82,7 +87,7 @@ public static class Api
     /// <param name="toDoList">Update the model below with the data desired</param>
     /// <param name="data"></param>
     /// <returns></returns>
-    private static async Task<IResult> UpdateToDoItem(ToDoListModel toDoList, IToDoListData data)
+    public static async Task<IResult> UpdateToDoItem(ToDoListModel toDoList, IToDoListData data)
     {
         try
         {
@@ -101,7 +106,7 @@ public static class Api
     /// <param name="id"></param>
     /// <param name="data"></param>
     /// <returns></returns>
-    private static async Task<IResult> DeleteToDoItem(int id, IToDoListData data)
+    public static async Task<IResult> DeleteToDoItem(int id, IToDoListData data)
     {
         try
         {
