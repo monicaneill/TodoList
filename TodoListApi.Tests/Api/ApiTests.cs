@@ -1,6 +1,7 @@
 ﻿using DataAccessLibrary.Data;
 using DataAccessLibrary.Models;
 using FluentValidation;
+using FluentValidation.Results;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using ApiClass = TodoList.WebApi.Api;
@@ -9,6 +10,8 @@ namespace TodoListApi.Tests.Api;
 
 public class ApiTests
 {
+    #region GetTests
+
     [Fact]
     public async Task GetToDoListItems_ReturnsOkResult_WithMultipleToDoListItems()
     {
@@ -17,9 +20,9 @@ public class ApiTests
         mockData.Setup(data => data.GetToDoListItems())
             .ReturnsAsync(new List<ToDoListModel>
             {
-                new ToDoListModel { Id = 1, ItemToDo = "Test Task 1", Completed = false },
-                new ToDoListModel { Id = 2, ItemToDo = "Test Task 2", Completed = true },
-                new ToDoListModel { Id = 3, ItemToDo = "Test Task 3", Completed = false }
+                new() { Id = 1, ItemToDo = "Test Task 1", Completed = false },
+                new() { Id = 2, ItemToDo = "Test Task 2", Completed = true },
+                new() { Id = 3, ItemToDo = "Test Task 3", Completed = false }
             });
 
         // Act
@@ -36,7 +39,7 @@ public class ApiTests
     }
 
     [Fact]
-    public async Task GetToDoListItem_ReturnsOkResult_WithToDoListItem()
+    public async Task GetToDoListItem_ReturnsOkResult_WithToDoListItemId()
     {
         // Arrange
         int testId = 1;
@@ -76,8 +79,8 @@ public class ApiTests
         // Arrange
         int testId = 1;
         var mockData = new Mock<IToDoListData>();
-        mockData.Setup(data => data.GetToDoListItem(testId))
-            .ReturnsAsync((ToDoListModel)null);
+        mockData.Setup(data => data.GetToDoListItem(testId))!
+            .ReturnsAsync((ToDoListModel)null!);
 
         // Act
         var result = await ApiClass.GetToDoListItem(testId, mockData.Object);
@@ -86,14 +89,18 @@ public class ApiTests
         Assert.IsType<NotFound>(result);
     }
 
+    #endregion
+
+    #region FilterTests
+
     [Fact]
     public async Task FilterToDoListItem_ReturnsNotFound_WhenItemDoesNotExist()
     {
         // Arrange
         bool completed = true;
         var mockData = new Mock<IToDoListData>();
-        mockData.Setup(data => data.FilterToDoListItem(completed))
-            .ReturnsAsync((IEnumerable<ToDoListModel>)null);
+        mockData.Setup(data => data.FilterToDoListItem(completed))!
+            .ReturnsAsync((IEnumerable<ToDoListModel>)null!);
 
         // Act
         var result = await ApiClass.FilterToDoListItem(completed, mockData.Object);
@@ -103,6 +110,38 @@ public class ApiTests
     }
 
     [Fact]
+    public async Task FilterToDoListItem_ReturnsItemByCompletedBool()
+    {
+        // Arrange
+        bool completed = true;
+        var mockData = new Mock<IToDoListData>();
+
+        mockData.Setup(data => data.FilterToDoListItem(completed))
+            .ReturnsAsync(new List<ToDoListModel>
+            {
+                new() { Id = 1, ItemToDo = "Task 1", Completed = true },
+                new() { Id = 2, ItemToDo = "Task 2", Completed = true },
+                new() { Id = 3, ItemToDo = "Task 3", Completed = false}
+            });
+
+        // Act
+        var result = await ApiClass.FilterToDoListItem(completed, mockData.Object);
+
+        // Assert
+        var okResult = Assert.IsType<Ok<IEnumerable<ToDoListModel>>>(result);
+        var returnValue = Assert.IsAssignableFrom<IEnumerable<ToDoListModel>>(okResult.Value);
+
+ var filteredResults = returnValue.Where(item => item.Completed == completed);
+
+    Assert.All(filteredResults, item => Assert.True(item.Completed));
+    Assert.Equal(2, filteredResults.Count());
+    }
+
+    #endregion
+
+        #region InsertTests
+
+        [Fact]
     public async Task InsertToDoItem_ReturnsOkResult_WhenItemIsInsertedSuccessfully()
     {
         // Arrange
@@ -115,7 +154,7 @@ public class ApiTests
 
         var mockValidator = new Mock<IValidator<ToDoListModel>>();
         mockValidator.Setup(v => v.ValidateAsync(newToDoItem, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            .ReturnsAsync(new ValidationResult());
 
         // Act
         var result = await ApiClass.InsertToDoItem(newToDoItem, mockData.Object, mockValidator.Object);
@@ -128,7 +167,39 @@ public class ApiTests
     [Fact]
     public async Task InsertToDoItem_DoesNotAddWhiteSpaceOrNull()
     {
+        // Arrange
+        var mockData = new Mock<IToDoListData>();
+        var mockValidator = new Mock<IValidator<ToDoListModel>>();
 
+        mockValidator
+            .Setup(v => v.ValidateAsync(It.IsAny<ToDoListModel>(), default))
+            .ReturnsAsync((ToDoListModel model, CancellationToken _) =>
+            {
+                var validationResult = new ValidationResult();
+
+                if (string.IsNullOrWhiteSpace(model.ItemToDo))
+                {
+                    validationResult.Errors.Add(new ValidationFailure("ItemToDo", "'Item To Do' must not be empty."));
+                }
+
+                return validationResult;
+            });
+
+        var invalidItems = new List<string> { "", " ", "\n", "\r", "\r\n", "       ", null };
+
+        foreach (var invalidItem in invalidItems)
+        {
+            var newItem = new ToDoListModel { Id = 0, ItemToDo = invalidItem, Completed = false };
+
+            // Act
+            var result = await ApiClass.InsertToDoItem(newItem, mockData.Object, mockValidator.Object);
+
+            // Assert
+            Assert.IsType<ValidationProblem>(result); // Ensure a validation error response is returned
+
+            // Verify that InsertToDoItem on the data layer was never called
+            mockData.Verify(data => data.InsertToDoItem(It.IsAny<ToDoListModel>()), Times.Never());
+        }
     }
 
     [Fact]
@@ -139,12 +210,12 @@ public class ApiTests
         var newToDoItem = new ToDoListModel { Id = 0, ItemToDo = "New Task", Completed = false };
 
         mockData.Setup(data => data.InsertToDoItem(newToDoItem))
-            .ThrowsAsync(new System.Exception("Database error"));
+            .ThrowsAsync(new Exception("Database error"));
 
         var mockValidator = new Mock<IValidator<ToDoListModel>>();
 
         mockValidator.Setup(v => v.ValidateAsync(newToDoItem, default))
-            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+            .ReturnsAsync(new ValidationResult());
 
         // Act
         var result = await ApiClass.InsertToDoItem(newToDoItem, mockData.Object, mockValidator.Object);
@@ -153,3 +224,11 @@ public class ApiTests
         Assert.IsType<ProblemHttpResult>(result);
     }
 }
+
+#endregion
+
+#region DeleteTests
+
+//ToDo - Add
+
+#endregion

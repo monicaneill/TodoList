@@ -1,6 +1,5 @@
 using DataAccessLibrary.DbAccess;
 using FluentValidation;
-using FluentValidation.AspNetCore;
 using System.Reflection;
 using TodoList.WebApi;
 using TodoList.WebApi.Validation;

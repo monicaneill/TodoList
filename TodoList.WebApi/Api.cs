@@ -56,7 +56,13 @@ public static class Api
         try
         {
             var results = await data.FilterToDoListItem(completed);
-            return results is null ? Results.NotFound() : Results.Ok(results);
+
+            if (results == null || !results.Any())
+            {
+                return Results.NotFound();
+            }
+
+            return Results.Ok(results);
         }
         catch (Exception e)
         {
