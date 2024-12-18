@@ -1,4 +1,6 @@
-﻿namespace TodoList.WebApi;
+﻿using FluentValidation;
+
+namespace TodoList.WebApi;
 
 public static class Api
 {
@@ -68,8 +70,15 @@ public static class Api
     /// <param name="toDoList">When inserting a new item, don't alter the id field (leave as 0). This will automatically insert as the next auto-increment id</param>
     /// <param name="data"></param>
     /// <returns></returns>
-    public static async Task<IResult> InsertToDoItem(ToDoListModel toDoList, IToDoListData data)
+    public static async Task<IResult> InsertToDoItem(ToDoListModel toDoList, IToDoListData data, IValidator<ToDoListModel> validator)
     {
+        var validationResult = await validator.ValidateAsync(toDoList);
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
         try
         {
             await data.InsertToDoItem(toDoList);

@@ -1,8 +1,9 @@
-﻿using ApiClass = TodoList.WebApi.Api;
-using DataAccessLibrary.Data;
+﻿using DataAccessLibrary.Data;
 using DataAccessLibrary.Models;
+using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using ApiClass = TodoList.WebApi.Api;
 
 namespace TodoListApi.Tests.Api;
 
@@ -109,17 +110,25 @@ public class ApiTests
         var newToDoItem = new ToDoListModel { Id = 0, ItemToDo = "New Task", Completed = false };
 
         mockData.Setup(data => data.InsertToDoItem(newToDoItem))
-            .Returns(Task.CompletedTask) // Simulate successful insert
+            .Returns(Task.CompletedTask)
             .Verifiable();
 
+        var mockValidator = new Mock<IValidator<ToDoListModel>>();
+        mockValidator.Setup(v => v.ValidateAsync(newToDoItem, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
         // Act
-        var result = await ApiClass.InsertToDoItem(newToDoItem, mockData.Object);
+        var result = await ApiClass.InsertToDoItem(newToDoItem, mockData.Object, mockValidator.Object);
 
         // Assert
-        Assert.IsType<Ok<string>>(result);
-
-        // Verify that the InsertToDoItem method was called exactly once with the correct parameter
+        Assert.IsType<Ok>(result);
         mockData.Verify(data => data.InsertToDoItem(newToDoItem), Times.Once);
+    }
+
+    [Fact]
+    public async Task InsertToDoItem_DoesNotAddWhiteSpaceOrNull()
+    {
+
     }
 
     [Fact]
@@ -132,8 +141,13 @@ public class ApiTests
         mockData.Setup(data => data.InsertToDoItem(newToDoItem))
             .ThrowsAsync(new System.Exception("Database error"));
 
+        var mockValidator = new Mock<IValidator<ToDoListModel>>();
+
+        mockValidator.Setup(v => v.ValidateAsync(newToDoItem, default))
+            .ReturnsAsync(new FluentValidation.Results.ValidationResult());
+
         // Act
-        var result = await ApiClass.InsertToDoItem(newToDoItem, mockData.Object);
+        var result = await ApiClass.InsertToDoItem(newToDoItem, mockData.Object, mockValidator.Object);
 
         // Assert
         Assert.IsType<ProblemHttpResult>(result);

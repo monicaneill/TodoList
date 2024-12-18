@@ -6,9 +6,8 @@ namespace TodoListApi.Tests.Validation;
 public class TodoListValidationTests
 {
     [Theory]
-    [InlineData(0)]
     [InlineData(-1)]
-    public void Validate_Id_CannotBeLessThan1(int id)
+    public void Validate_Id_CannotBeLessThan0(int id)
     {
         //Arrange
         var todoListDtoValidator = new TodoListDtoValidator();
@@ -19,7 +18,7 @@ public class TodoListValidationTests
 
         //Assert
         result.IsValid.Should().BeFalse();
-        result.Errors.Should().Contain(e => e.ErrorMessage == "'Id' must be greater than '0'.");
+        result.Errors.Should().Contain(e => e.ErrorMessage == "'Id' must be greater than or equal to '0'.");
     }
 
     [Theory]
