@@ -1,10 +1,10 @@
 ﻿using DataAccessLibrary.Models;
 
-namespace TodoListApi.Tests;
+namespace ToDoListApi.Tests;
 
-public class TodoListDataBuilder
+public class ToDoListDataBuilder
 {
-    public static ToDoListModel CreateTodoList(int id, string itemToDo, bool completed)
+    public static ToDoListModel CreateToDoList(int id, string itemToDo, bool completed)
     {
         return new ToDoListModel
         {

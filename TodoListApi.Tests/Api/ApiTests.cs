@@ -4,9 +4,9 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
-using ApiClass = TodoList.WebApi.Api;
+using ApiClass = ToDoList.WebApi.Api;
 
-namespace TodoListApi.Tests.Api;
+namespace ToDoListApi.Tests.Api;
 
 public class ApiTests
 {

@@ -2,16 +2,16 @@ using System.Runtime.CompilerServices;
 using FluentAssertions;
 using DataAccessLibrary.Models;
 
-namespace TodoListApi.Tests.Models;
+namespace ToDoListApi.Tests.Models;
 
-public class TodoListItemTests
+public class ToDoListItemTests
 {
 
     [Fact]
     public void ItemToDo_CanBeAltered()
     {
         //Arrange
-        var todoObject = TodoListDataBuilder.CreateTodoList(1, "Go for run", false);
+        var todoObject = ToDoListDataBuilder.CreateToDoList(1, "Go for run", false);
 
         //Act
         todoObject.ItemToDo = "Wipe counters";
@@ -24,7 +24,7 @@ public class TodoListItemTests
     public void Completed_CanBeChanged()
     {
         //Arrange
-        var todoObject = TodoListDataBuilder.CreateTodoList(1, "Wipe counters", false);
+        var todoObject = ToDoListDataBuilder.CreateToDoList(1, "Wipe counters", false);
 
         //Act
         todoObject.Completed = true;
@@ -37,7 +37,7 @@ public class TodoListItemTests
     [InlineData(nameof(ToDoListModel.Id))]
     [InlineData(nameof(ToDoListModel.ItemToDo))]
     [InlineData(nameof(ToDoListModel.Completed))]
-    public void TodoListModel_ShouldHaveRequiredMemberAttributeSetOnAllProperties(string propertyName)
+    public void ToDoListModel_ShouldHaveRequiredMemberAttributeSetOnAllProperties(string propertyName)
     {
         var requiredProperty = typeof(ToDoListModel).GetProperty(propertyName);
 

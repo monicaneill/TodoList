@@ -1,17 +1,18 @@
 ﻿using FluentAssertions;
-using TodoList.WebApi.Validation;
+using ToDoList.WebApi.Validation;
+using ToDoListApi.Tests;
 
-namespace TodoListApi.Tests.Validation;
+namespace ToDoListApi.Tests.Validation;
 
-public class TodoListValidationTests
+public class ToDoListValidationTests
 {
     [Theory]
     [InlineData(-1)]
     public void Validate_Id_CannotBeLessThan0(int id)
     {
         //Arrange
-        var todoListDtoValidator = new TodoListDtoValidator();
-        var todoObject = TodoListDataBuilder.CreateTodoList(id, "Eat", false);
+        var todoListDtoValidator = new ToDoListDtoValidator();
+        var todoObject = ToDoListDataBuilder.CreateToDoList(id, "Eat", false);
 
         //Act
         var result = todoListDtoValidator.Validate(todoObject);
@@ -31,8 +32,8 @@ public class TodoListValidationTests
     [InlineData(null)]
     public void Validate_ItemToDo_CannotBeEmpty(string itemToDo)
     {
-        var todoListDtoValidator = new TodoListDtoValidator();
-        var todoObject = TodoListDataBuilder.CreateTodoList(1, itemToDo, false);
+        var todoListDtoValidator = new ToDoListDtoValidator();
+        var todoObject = ToDoListDataBuilder.CreateToDoList(1, itemToDo, false);
 
         var result = todoListDtoValidator.Validate(todoObject);
 

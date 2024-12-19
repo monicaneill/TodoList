@@ -1,8 +1,8 @@
 using DataAccessLibrary.DbAccess;
 using FluentValidation;
 using System.Reflection;
-using TodoList.WebApi;
-using TodoList.WebApi.Validation;
+using ToDoList.WebApi;
+using ToDoList.WebApi.Validation;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,7 +12,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<ISqlDataAccess, SqlDataAccess>();
 builder.Services.AddSingleton<IToDoListData, ToDoListData>();
-builder.Services.AddValidatorsFromAssemblyContaining<TodoListDtoValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<ToDoListDtoValidator>();
 builder.Services.AddSwaggerGen(c =>
 {
     c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory,

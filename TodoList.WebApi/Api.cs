@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace TodoList.WebApi;
+namespace ToDoList.WebApi;
 
 public static class Api
 {

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace TodoList.WebApi.Validation;
+namespace ToDoList.WebApi.Validation;
 
-public class TodoListDtoValidator : AbstractValidator<ToDoListModel>
+public class ToDoListDtoValidator : AbstractValidator<ToDoListModel>
 {
-    public TodoListDtoValidator()
+    public ToDoListDtoValidator()
     {
         RuleFor(x => x.Id)
             .GreaterThanOrEqualTo(0);
