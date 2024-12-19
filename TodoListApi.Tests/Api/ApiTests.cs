@@ -131,17 +131,17 @@ public class ApiTests
         var okResult = Assert.IsType<Ok<IEnumerable<ToDoListModel>>>(result);
         var returnValue = Assert.IsAssignableFrom<IEnumerable<ToDoListModel>>(okResult.Value);
 
- var filteredResults = returnValue.Where(item => item.Completed == completed);
+        var filteredResults = returnValue.Where(item => item.Completed == completed);
 
-    Assert.All(filteredResults, item => Assert.True(item.Completed));
-    Assert.Equal(2, filteredResults.Count());
+        Assert.All(filteredResults, item => Assert.True(item.Completed));
+        Assert.Equal(2, filteredResults.Count());
     }
 
     #endregion
 
-        #region InsertTests
+    #region InsertTests
 
-        [Fact]
+    [Fact]
     public async Task InsertToDoItem_ReturnsOkResult_WhenItemIsInsertedSuccessfully()
     {
         // Arrange
@@ -195,9 +195,8 @@ public class ApiTests
             var result = await ApiClass.InsertToDoItem(newItem, mockData.Object, mockValidator.Object);
 
             // Assert
-            Assert.IsType<ValidationProblem>(result); // Ensure a validation error response is returned
+            Assert.IsType<ProblemHttpResult>(result);
 
-            // Verify that InsertToDoItem on the data layer was never called
             mockData.Verify(data => data.InsertToDoItem(It.IsAny<ToDoListModel>()), Times.Never());
         }
     }
@@ -224,6 +223,12 @@ public class ApiTests
         Assert.IsType<ProblemHttpResult>(result);
     }
 }
+
+#endregion
+
+#region UpdateTests
+
+//ToDo - Implement Put tests
 
 #endregion
 
