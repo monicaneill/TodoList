@@ -132,6 +132,12 @@ public static class Api
     {
         try
         {
+            var existingItem = await data.GetToDoListItem(id);
+            if (existingItem == null)
+            {
+                return Results.NotFound();
+            }
+
             await data.DeleteToDoItem(id);
             return Results.Ok();
         }

@@ -279,7 +279,70 @@ public class ApiTests
 
     #region DeleteTests
 
-    //ToDo - Add
+    [Fact]
+    public async Task DeleteToDoItem_ReturnsOkResult_WhenDeletionIsSuccessful()
+    {
+        // Arrange
+        var mockData = new Mock<IToDoListData>();
+
+        var existingToDoItem = new ToDoListModel { Id = 1, ItemToDo = "Task to delete", Completed = false };
+        mockData.Setup(data => data.GetToDoListItem(1))
+            .ReturnsAsync(existingToDoItem);
+
+        mockData.Setup(data => data.DeleteToDoItem(1))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+
+        // Act
+        var result = await ApiClass.DeleteToDoItem(1, mockData.Object);
+
+        // Assert
+        Assert.IsType<Ok>(result);
+        mockData.Verify(data => data.GetToDoListItem(1), Times.Once);
+        mockData.Verify(data => data.DeleteToDoItem(1), Times.Once);
+    }
+
+    [Fact]
+    public async Task DeleteToDoItem_ReturnsNotFound_WhenItemDoesNotExist()
+    {
+        // Arrange
+        var mockData = new Mock<IToDoListData>();
+
+        mockData.Setup(data => data.GetToDoListItem(999))
+            .ReturnsAsync((ToDoListModel)null);
+
+        // Act
+        var result = await ApiClass.DeleteToDoItem(999, mockData.Object);
+
+        // Assert
+        Assert.IsType<NotFound>(result);
+        mockData.Verify(data => data.GetToDoListItem(999), Times.Once);
+        mockData.Verify(data => data.DeleteToDoItem(It.IsAny<int>()), Times.Never);
+    }
+
+    [Fact]
+    public async Task DeleteToDoItem_ReturnsProblem_WhenExceptionIsThrown()
+    {
+        // Arrange
+        var mockData = new Mock<IToDoListData>();
+
+        var existingToDoItem = new ToDoListModel { Id = 1, ItemToDo = "Task to delete", Completed = false };
+        mockData.Setup(data => data.GetToDoListItem(1))
+            .ReturnsAsync(existingToDoItem);
+
+        mockData.Setup(data => data.DeleteToDoItem(1))
+            .ThrowsAsync(new Exception("Database error"));
+
+        // Act
+        var result = await ApiClass.DeleteToDoItem(1, mockData.Object);
+
+        // Assert
+        var problemResult = Assert.IsType<ProblemHttpResult>(result);
+        Assert.Equal("Database error", problemResult.ProblemDetails.Detail);
+
+        mockData.Verify(data => data.GetToDoListItem(1), Times.Once); 
+        mockData.Verify(data => data.DeleteToDoItem(1), Times.Once);
+    }
 
     #endregion
 }
