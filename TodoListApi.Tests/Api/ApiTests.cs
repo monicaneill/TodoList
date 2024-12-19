@@ -121,7 +121,7 @@ public class ApiTests
             {
                 new() { Id = 1, ItemToDo = "Task 1", Completed = true },
                 new() { Id = 2, ItemToDo = "Task 2", Completed = true },
-                new() { Id = 3, ItemToDo = "Task 3", Completed = false}
+                new() { Id = 3, ItemToDo = "Task 3", Completed = false }
             });
 
         // Act
@@ -185,7 +185,16 @@ public class ApiTests
                 return validationResult;
             });
 
-        var invalidItems = new List<string> { "", " ", "\n", "\r", "\r\n", "       ", null };
+        var invalidItems = new List<string>
+        {
+            "",
+            " ",
+            "\n",
+            "\r",
+            "\r\n",
+            "       ",
+            null
+        };
 
         foreach (var invalidItem in invalidItems)
         {
@@ -222,18 +231,55 @@ public class ApiTests
         // Assert
         Assert.IsType<ProblemHttpResult>(result);
     }
+
+    #endregion
+
+    #region UpdateTests
+
+    [Fact]
+    public async Task UpdateToDoItem_OverwritesExistingItem()
+    {
+        // Arrange
+        var mockData = new Mock<IToDoListData>();
+
+        var existingToDoItem = new ToDoListModel { Id = 1, ItemToDo = "Pre-Existing Item", Completed = false };
+
+        var updatedToDoItem = new ToDoListModel { Id = 1, ItemToDo = "Updated Task", Completed = true };
+
+        mockData.Setup(data => data.GetToDoListItem(1))
+            .ReturnsAsync(existingToDoItem);
+
+        mockData.Setup(data => data.UpdateToDoItem(updatedToDoItem))
+            .Returns(Task.CompletedTask)
+            .Verifiable();
+
+        mockData.Setup(data => data.GetToDoListItem(1))
+            .ReturnsAsync(updatedToDoItem);
+
+        var mockValidator = new Mock<IValidator<ToDoListModel>>();
+        mockValidator.Setup(v => v.ValidateAsync(updatedToDoItem, default))
+            .ReturnsAsync(new ValidationResult());
+
+        // Act
+        await ApiClass.UpdateToDoItem(updatedToDoItem, mockData.Object, mockValidator.Object);
+
+        var result = await mockData.Object.GetToDoListItem(1);
+
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(updatedToDoItem.ItemToDo, result.ItemToDo);
+        Assert.True(result.Completed);
+
+        mockData.Verify(data => data.UpdateToDoItem(updatedToDoItem), Times.Once);
+
+        Assert.NotEqual(existingToDoItem.ItemToDo, result.ItemToDo);
+    }
+
+    #endregion
+
+    #region DeleteTests
+
+    //ToDo - Add
+
+    #endregion
 }
-
-#endregion
-
-#region UpdateTests
-
-//ToDo - Implement Put tests
-
-#endregion
-
-#region DeleteTests
-
-//ToDo - Add
-
-#endregion

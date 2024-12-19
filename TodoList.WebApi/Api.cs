@@ -102,8 +102,15 @@ public static class Api
     /// <param name="toDoList">Update the model below with the data desired</param>
     /// <param name="data"></param>
     /// <returns></returns>
-    public static async Task<IResult> UpdateToDoItem(ToDoListModel toDoList, IToDoListData data)
+    public static async Task<IResult> UpdateToDoItem(ToDoListModel toDoList, IToDoListData data, IValidator<ToDoListModel> validator)
     {
+        var validationResult = await validator.ValidateAsync(toDoList);
+
+        if (!validationResult.IsValid)
+        {
+            return Results.ValidationProblem(validationResult.ToDictionary());
+        }
+
         try
         {
             await data.UpdateToDoItem(toDoList);
